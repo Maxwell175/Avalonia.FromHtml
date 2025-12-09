@@ -1,0 +1,186 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="800"
+        x:Class="HtmlToAvalonia.Demo.MainWindow"
+        Title="HtmlToAvalonia Demo - HTML to Avalonia Converter"
+        Width="1200" Height="800">
+
+    <Grid RowDefinitions="Auto,*">
+        <!-- Header -->
+        <Border Grid.Row="0" Background="#2C3E50" Padding="20">
+            <StackPanel>
+                <TextBlock Text="HtmlToAvalonia Demo"
+                          FontSize="24"
+                          FontWeight="Bold"
+                          Foreground="White"/>
+                <TextBlock Text="Interactive examples showing HTML with CSS converted to Avalonia controls"
+                          FontSize="14"
+                          Foreground="#ECF0F1"
+                          Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- Main Content -->
+        <TabControl Grid.Row="1" Margin="10">
+            <!-- Tab 1: Basic Formatting -->
+            <TabItem Header="Basic Formatting">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="BasicFormattingHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="BasicFormattingOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 2: Colors and Styles -->
+            <TabItem Header="Colors &amp; Styles">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="ColorsHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="ColorsOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 3: Tables -->
+            <TabItem Header="Tables">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="TablesHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="TablesOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 4: Alignment -->
+            <TabItem Header="Alignment">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="AlignmentHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="AlignmentOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 5: Complex Document -->
+            <TabItem Header="Complex Document">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="ComplexHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="ComplexOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 6: Interactive -->
+            <TabItem Header="Interactive">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source (type here):" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="InteractiveHtml"
+                                        AcceptsReturn="True"
+                                        TextWrapping="Wrap"
+                                        FontFamily="Consolas,Courier New,monospace"
+                                        FontSize="12"
+                                        Watermark="Type HTML here and see it rendered in real-time..."
+                                        TextChanged="OnInteractiveHtmlChanged"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border x:Name="InteractiveOutput" Padding="10"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,0 +1,36 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+
+        <!-- NuGet Package Properties -->
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>HtmlToAvalonia</PackageId>
+        <Version>1.0.0</Version>
+        <Authors>Maxwell Dreytser</Authors>
+        <Company>Maxwell Dreytser</Company>
+        <Product>HtmlToAvalonia</Product>
+        <Description>A library that converts HTML strings with CSS formatting into Avalonia UI controls. Supports text formatting, colors, layouts, tables, and more using AngleSharp for standards-compliant HTML/CSS parsing.</Description>
+        <PackageTags>avalonia;html;css;ui;controls;anglesharp</PackageTags>
+        <PackageProjectUrl>https://github.com/MaxwellDreytser/HtmlToAvalonia</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Maxwell175/HtmlToAvalonia</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+        <Copyright>Copyright (c) 2025 Maxwell Dreytser</Copyright>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="AngleSharp" Version="1.4.0" />
+      <PackageReference Include="AngleSharp.Css" Version="1.0.0-beta.157" />
+      <PackageReference Include="Avalonia" Version="[11.2.0,)" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Include="..\README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+</Project>
