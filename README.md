@@ -83,6 +83,55 @@ var control3 = HtmlConverter.ToAvalonia(
 
 **Note:** The library automatically detects your screen's actual dimensions and DPI from Avalonia when parameters are not specified.
 
+### Applying HTML to an Existing TextBlock
+
+If you want to apply HTML formatting directly to an existing `TextBlock` without creating wrapper controls, use the `ApplyToTextBlock` method. This is useful when you only need inline formatting (bold, italic, underline, spans, etc.) and don't need complex layouts like tables or divs:
+
+```csharp
+using HtmlToAvalonia;
+using Avalonia.Controls;
+
+// Create a TextBlock
+var textBlock = new TextBlock();
+
+// Apply HTML with inline formatting
+var html = "This is <b>bold</b>, <i>italic</i>, and <u>underlined</u> text with <span style='color: red;'>colored spans</span>.";
+HtmlConverter.ApplyToTextBlock(textBlock, html);
+
+// The TextBlock now contains formatted inline content
+// Block-level elements (div, p, table, etc.) are ignored - only their inline content is extracted
+```
+
+**Key Differences:**
+- `ToAvalonia()`: Returns a `Control` that can include complex layouts (tables, divs, panels, etc.)
+- `ApplyToTextBlock()`: Applies only inline formatting to an existing `TextBlock`, ignoring block-level elements
+
+**Supported inline elements:**
+- `<b>`, `<strong>` - Bold text
+- `<i>`, `<em>` - Italic text
+- `<u>` - Underlined text
+- `<span>` - Styled spans with CSS
+- `<br>` - Line breaks
+- `<h1>`, `<h2>`, `<h3>`, `<h4>`, `<h5>`, `<h6>` - Headings (rendered inline with appropriate font sizes)
+- `<p>` - Paragraphs (rendered inline without creating separate blocks)
+
+**Example with CSS and headings:**
+```csharp
+var textBlock = new TextBlock();
+var html = @"
+    <div>
+        <h2>Welcome to HtmlToAvalonia!</h2>
+        <p>This library supports <b style='color: blue;'>bold</b>, <i>italic</i>, and <u>underlined</u> text.</p>
+        <br/>
+        <h3>Features:</h3>
+        You can use <span style='font-size: 18px; color: red;'>custom styles</span> and
+        <b><i>combined formatting</i></b>.
+    </div>";
+HtmlConverter.ApplyToTextBlock(textBlock, html);
+```
+
+In this example, the `<div>` tag is ignored, but all the inline content and formatting is preserved. Headings (`<h2>`, `<h3>`) and paragraphs (`<p>`) are rendered inline with appropriate styling.
+
 ## Supported HTML Tags
 
 - **Text Formatting**: `<b>`, `<strong>`, `<i>`, `<em>`, `<u>`

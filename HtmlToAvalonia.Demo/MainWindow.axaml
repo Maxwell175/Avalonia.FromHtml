@@ -154,7 +154,35 @@
                 </Grid>
             </TabItem>
 
-            <!-- Tab 6: Interactive -->
+            <!-- Tab 6: Inline TextBlock -->
+            <TabItem Header="Inline TextBlock">
+                <Grid ColumnDefinitions="*,*" Margin="10">
+                    <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="HTML Source:" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <TextBox x:Name="InlineHtml"
+                                        IsReadOnly="True"
+                                        TextWrapping="Wrap"
+                                        AcceptsReturn="True"
+                                        FontFamily="Consolas"/>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="5,0,0,0">
+                        <Grid RowDefinitions="Auto,*">
+                            <TextBlock Grid.Row="0" Text="Rendered Output (TextBlock with Inlines):" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                            <ScrollViewer Grid.Row="1">
+                                <Border Padding="10" Background="White">
+                                    <TextBlock x:Name="InlineOutput" TextWrapping="Wrap"/>
+                                </Border>
+                            </ScrollViewer>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </TabItem>
+
+            <!-- Tab 7: Interactive -->
             <TabItem Header="Interactive">
                 <Grid ColumnDefinitions="*,*" Margin="10">
                     <Border Grid.Column="0" BorderBrush="Gray" BorderThickness="1" Padding="10" Margin="0,0,5,0">

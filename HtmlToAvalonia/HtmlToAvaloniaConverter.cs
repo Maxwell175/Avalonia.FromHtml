@@ -277,10 +277,34 @@ internal class HtmlToAvaloniaConverter
                 return CreateSpanInline(element, parentContext);
             case "br":
                 return new LineBreak();
+            case "h1" or "h2" or "h3" or "h4" or "h5" or "h6":
+                return CreateHeadingInline(element, tagName, parentContext);
+            case "p":
+                return CreateParagraphInline(element, parentContext);
             default:
                 // For unknown inline elements, just return the text content
                 return new Run(element.TextContent);
         }
+    }
+
+    /// <summary>
+    /// Helper method to create a Span with formatting from the context.
+    /// </summary>
+    private Span CreateFormattedSpan(InlineFormattingContext context, double? fontSize = null)
+    {
+        var span = new Span
+        {
+            FontWeight = context.FontWeight,
+            FontStyle = context.FontStyle,
+            TextDecorations = context.TextDecorations
+        };
+
+        if (fontSize.HasValue)
+        {
+            span.FontSize = fontSize.Value;
+        }
+
+        return span;
     }
 
     private Inline CreateBoldInline(IElement element, InlineFormattingContext parentContext)
@@ -289,14 +313,7 @@ internal class HtmlToAvaloniaConverter
         var context = parentContext.Clone();
         context.FontWeight = AvaloniaFontWeight.Bold;
 
-        // Apply all accumulated formatting to the span
-        var span = new Span
-        {
-            FontWeight = context.FontWeight,
-            FontStyle = context.FontStyle,
-            TextDecorations = context.TextDecorations
-        };
-
+        var span = CreateFormattedSpan(context);
         AddInlineContent(span, element, context);
         ApplyInlineStyles(span, element, preserveFontWeight: true);
         return span;
@@ -308,14 +325,7 @@ internal class HtmlToAvaloniaConverter
         var context = parentContext.Clone();
         context.FontStyle = AvaloniaFontStyle.Italic;
 
-        // Apply all accumulated formatting to the span
-        var span = new Span
-        {
-            FontWeight = context.FontWeight,
-            FontStyle = context.FontStyle,
-            TextDecorations = context.TextDecorations
-        };
-
+        var span = CreateFormattedSpan(context);
         AddInlineContent(span, element, context);
         ApplyInlineStyles(span, element, preserveFontStyle: true);
         return span;
@@ -327,14 +337,7 @@ internal class HtmlToAvaloniaConverter
         var context = parentContext.Clone();
         context.TextDecorations = TextDecorations.Underline;
 
-        // Apply all accumulated formatting to the span
-        var span = new Span
-        {
-            FontWeight = context.FontWeight,
-            FontStyle = context.FontStyle,
-            TextDecorations = context.TextDecorations
-        };
-
+        var span = CreateFormattedSpan(context);
         AddInlineContent(span, element, context);
         ApplyInlineStyles(span, element, preserveTextDecoration: true);
         return span;
@@ -345,14 +348,30 @@ internal class HtmlToAvaloniaConverter
         // Clone parent context (no additional formatting)
         var context = parentContext.Clone();
 
-        // Apply all accumulated formatting to the span
-        var span = new Span
-        {
-            FontWeight = context.FontWeight,
-            FontStyle = context.FontStyle,
-            TextDecorations = context.TextDecorations
-        };
+        var span = CreateFormattedSpan(context);
+        AddInlineContent(span, element, context);
+        ApplyInlineStyles(span, element);
+        return span;
+    }
 
+    private Inline CreateHeadingInline(IElement element, string tagName, InlineFormattingContext parentContext)
+    {
+        // Clone parent context and add bold
+        var context = parentContext.Clone();
+        context.FontWeight = AvaloniaFontWeight.Bold;
+
+        var span = CreateFormattedSpan(context, GetHeadingFontSize(tagName));
+        AddInlineContent(span, element, context);
+        ApplyInlineStyles(span, element, preserveFontWeight: true);
+        return span;
+    }
+
+    private Inline CreateParagraphInline(IElement element, InlineFormattingContext parentContext)
+    {
+        // Clone parent context (no additional formatting for paragraphs)
+        var context = parentContext.Clone();
+
+        var span = CreateFormattedSpan(context);
         AddInlineContent(span, element, context);
         ApplyInlineStyles(span, element);
         return span;
@@ -436,9 +455,7 @@ internal class HtmlToAvaloniaConverter
                         var fontWeight = computedStyle.GetPropertyValue("font-weight");
                         if (!string.IsNullOrEmpty(fontWeight))
                         {
-                            span.FontWeight = fontWeight.ToLowerInvariant() == "bold" || fontWeight == "700" || fontWeight == "800" || fontWeight == "900"
-                                ? AvaloniaFontWeight.Bold
-                                : AvaloniaFontWeight.Normal;
+                            span.FontWeight = ParseFontWeight(fontWeight);
                         }
                     }
 
@@ -448,7 +465,7 @@ internal class HtmlToAvaloniaConverter
                         var fontStyle = computedStyle.GetPropertyValue("font-style");
                         if (!string.IsNullOrEmpty(fontStyle))
                         {
-                            span.FontStyle = fontStyle.ToLowerInvariant() == "italic" ? AvaloniaFontStyle.Italic : AvaloniaFontStyle.Normal;
+                            span.FontStyle = ParseFontStyle(fontStyle);
                         }
                     }
 
@@ -710,18 +727,6 @@ internal class HtmlToAvaloniaConverter
 
     private Control ConvertHeading(IElement element, string tagName)
     {
-        // Determine font size based on heading level
-        double fontSize = tagName switch
-        {
-            "h1" => 32,
-            "h2" => 24,
-            "h3" => 18.72,
-            "h4" => 16,
-            "h5" => 13.28,
-            "h6" => 10.72,
-            _ => 14
-        };
-
         var children = element.ChildNodes
             .Where(n => n.NodeType == NodeType.Element || (n.NodeType == NodeType.Text && !string.IsNullOrWhiteSpace(n.TextContent)))
             .ToList();
@@ -732,7 +737,7 @@ internal class HtmlToAvaloniaConverter
         var textBlock = new TextBlock
         {
             FontWeight = AvaloniaFontWeight.Bold,
-            FontSize = fontSize,
+            FontSize = GetHeadingFontSize(tagName),
             TextWrapping = TextWrapping.Wrap
         };
 
@@ -1210,6 +1215,202 @@ internal class HtmlToAvaloniaConverter
         }
 
         return 0;
+    }
+
+    /// <summary>
+    /// Parses a CSS font-weight value to an Avalonia FontWeight.
+    /// </summary>
+    private AvaloniaFontWeight ParseFontWeight(string fontWeight)
+    {
+        if (string.IsNullOrEmpty(fontWeight))
+            return AvaloniaFontWeight.Normal;
+
+        fontWeight = fontWeight.ToLowerInvariant().Trim();
+
+        return fontWeight == "bold" || fontWeight == "700" || fontWeight == "800" || fontWeight == "900"
+            ? AvaloniaFontWeight.Bold
+            : AvaloniaFontWeight.Normal;
+    }
+
+    /// <summary>
+    /// Parses a CSS font-style value to an Avalonia FontStyle.
+    /// </summary>
+    private AvaloniaFontStyle ParseFontStyle(string fontStyle)
+    {
+        if (string.IsNullOrEmpty(fontStyle))
+            return AvaloniaFontStyle.Normal;
+
+        return fontStyle.ToLowerInvariant().Trim() == "italic"
+            ? AvaloniaFontStyle.Italic
+            : AvaloniaFontStyle.Normal;
+    }
+
+    /// <summary>
+    /// Gets the font size for a heading tag (h1-h6).
+    /// </summary>
+    private double GetHeadingFontSize(string tagName)
+    {
+        return tagName.ToLowerInvariant() switch
+        {
+            "h1" => 32,
+            "h2" => 24,
+            "h3" => 18.72,
+            "h4" => 16,
+            "h5" => 13.28,
+            "h6" => 10.72,
+            _ => 14
+        };
+    }
+
+    /// <summary>
+    /// Applies inline HTML content to an existing TextBlock.
+    /// Only processes inline elements and text content, ignoring block-level elements.
+    /// </summary>
+    public void ApplyInlineContentToTextBlock(TextBlock textBlock, IElement element)
+    {
+        // Clear any existing content
+        textBlock.Inlines?.Clear();
+        textBlock.Text = null;
+
+        // Set text wrapping
+        textBlock.TextWrapping = TextWrapping.Wrap;
+
+        // Process all child nodes and extract inline content
+        ProcessInlineContent(textBlock, element);
+
+        // Apply styles from the root element to the TextBlock itself
+        ApplyTextBlockStyles(textBlock, element);
+    }
+
+    /// <summary>
+    /// Recursively processes nodes and adds inline content to the TextBlock.
+    /// </summary>
+    private void ProcessInlineContent(TextBlock textBlock, INode node)
+    {
+        foreach (var child in node.ChildNodes)
+        {
+            if (child.NodeType == NodeType.Element && child is IElement childElement)
+            {
+                var tagName = childElement.TagName.ToLowerInvariant();
+
+                // Only process inline elements
+                if (IsInlineElement(childElement))
+                {
+                    var inline = ConvertToInline(childElement);
+                    if (inline != null)
+                    {
+                        textBlock.Inlines!.Add(inline);
+                    }
+                }
+                else
+                {
+                    // For block elements, recursively process their children to extract inline content
+                    ProcessInlineContent(textBlock, childElement);
+                }
+            }
+            else if (child.NodeType == NodeType.Text)
+            {
+                var text = child.TextContent;
+                if (!string.IsNullOrEmpty(text))
+                {
+                    textBlock.Inlines!.Add(new Run(text));
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Checks if an element can be represented as inline content in a TextBlock.
+    /// This includes true inline elements (b, i, u, span) and block-level elements
+    /// that can be represented inline (h1-h6, p).
+    /// </summary>
+    private bool IsInlineElement(IElement element)
+    {
+        var tag = element.TagName.ToLowerInvariant();
+        return tag == "b" || tag == "strong" || tag == "i" || tag == "em" ||
+               tag == "u" || tag == "span" || tag == "a" || tag == "br" ||
+               tag == "h1" || tag == "h2" || tag == "h3" || tag == "h4" || tag == "h5" || tag == "h6" ||
+               tag == "p";
+    }
+
+    /// <summary>
+    /// Applies styles from the HTML element to the TextBlock control.
+    /// </summary>
+    private void ApplyTextBlockStyles(TextBlock textBlock, IElement element)
+    {
+        // Use GetComputedStyle to get all computed CSS properties
+        if (element is IHtmlElement htmlElement)
+        {
+            var window = _document.DefaultView;
+            if (window != null)
+            {
+                var computedStyle = window.GetComputedStyle(htmlElement);
+                if (computedStyle != null)
+                {
+                    // Apply color
+                    var color = computedStyle.GetPropertyValue("color");
+                    if (!string.IsNullOrEmpty(color))
+                    {
+                        var brush = ParseColor(color);
+                        if (brush != null)
+                        {
+                            textBlock.Foreground = brush;
+                        }
+                    }
+
+                    // Apply background-color
+                    var backgroundColor = computedStyle.GetPropertyValue("background-color");
+                    if (!string.IsNullOrEmpty(backgroundColor) &&
+                        !backgroundColor.Equals("transparent", StringComparison.OrdinalIgnoreCase))
+                    {
+                        var brush = ParseColor(backgroundColor);
+                        if (brush != null)
+                        {
+                            textBlock.Background = brush;
+                        }
+                    }
+
+                    // Apply font-size
+                    var fontSize = computedStyle.GetPropertyValue("font-size");
+                    if (!string.IsNullOrEmpty(fontSize))
+                    {
+                        var size = ParseLength(fontSize);
+                        if (size > 0)
+                        {
+                            textBlock.FontSize = size;
+                        }
+                    }
+
+                    // Apply font-weight
+                    var fontWeight = computedStyle.GetPropertyValue("font-weight");
+                    if (!string.IsNullOrEmpty(fontWeight))
+                    {
+                        textBlock.FontWeight = ParseFontWeight(fontWeight);
+                    }
+
+                    // Apply font-style
+                    var fontStyle = computedStyle.GetPropertyValue("font-style");
+                    if (!string.IsNullOrEmpty(fontStyle))
+                    {
+                        textBlock.FontStyle = ParseFontStyle(fontStyle);
+                    }
+
+                    // Apply text-align
+                    var textAlign = computedStyle.GetPropertyValue("text-align");
+                    if (!string.IsNullOrEmpty(textAlign))
+                    {
+                        textBlock.TextAlignment = textAlign switch
+                        {
+                            "left" => AvaloniaTextAlignment.Left,
+                            "center" => AvaloniaTextAlignment.Center,
+                            "right" => AvaloniaTextAlignment.Right,
+                            "justify" => AvaloniaTextAlignment.Justify,
+                            _ => AvaloniaTextAlignment.Left
+                        };
+                    }
+                }
+            }
+        }
     }
 }
 

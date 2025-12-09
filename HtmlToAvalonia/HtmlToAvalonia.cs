@@ -58,6 +58,57 @@ public static class HtmlConverter
     }
 
     /// <summary>
+    /// Applies HTML with inline formatting to an existing TextBlock.
+    /// This method processes inline elements (b, i, u, span, br, h1-h6, p) and text content.
+    /// Block-level layout elements (div, table, etc.) are ignored, but their inline content is extracted.
+    /// Headings (h1-h6) are rendered inline with appropriate font sizes and bold weight.
+    /// </summary>
+    /// <param name="textBlock">The TextBlock to apply the HTML formatting to.</param>
+    /// <param name="html">The HTML string to convert.</param>
+    /// <param name="viewportWidth">Optional viewport width in pixels. If not specified, uses primary screen width or 1920.</param>
+    /// <param name="viewportHeight">Optional viewport height in pixels. If not specified, uses primary screen height or 1080.</param>
+    /// <param name="fontSize">Optional base font size in pixels for em/rem calculations. Default is 16.</param>
+    public static void ApplyToTextBlock(
+        TextBlock textBlock,
+        string html,
+        double? viewportWidth = null,
+        double? viewportHeight = null,
+        double fontSize = 16.0)
+    {
+        if (textBlock == null)
+        {
+            throw new ArgumentNullException(nameof(textBlock));
+        }
+
+        if (string.IsNullOrWhiteSpace(html))
+        {
+            textBlock.Text = string.Empty;
+            return;
+        }
+
+        // Create a render device to support em/rem units
+        var renderDevice = new AvaloniaRenderDevice(viewportWidth, viewportHeight, fontSize);
+
+        var config = Configuration.Default
+            .WithDefaultLoader()
+            .WithCss()
+            .WithRenderDevice(renderDevice);
+
+        var context = BrowsingContext.New(config);
+        var document = context.OpenAsync(req => req.Content(html)).Result;
+
+        var body = document.Body ?? document.DocumentElement;
+        if (body == null)
+        {
+            textBlock.Text = html;
+            return;
+        }
+
+        var converter = new HtmlToAvaloniaConverter(document);
+        converter.ApplyInlineContentToTextBlock(textBlock, body);
+    }
+
+    /// <summary>
     /// Render device implementation that uses Avalonia's actual screen properties.
     /// Supports both desktop and mobile applications.
     /// </summary>

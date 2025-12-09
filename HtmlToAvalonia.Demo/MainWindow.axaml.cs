@@ -358,7 +358,48 @@ public partial class MainWindow : Window
         ComplexHtml.Text = complexHtml;
         ComplexOutput.Child = HtmlConverter.ToAvalonia(complexHtml);
 
-        // Example 6: Interactive - Start with a simple example
+        // Example 6: Inline TextBlock - ApplyToTextBlock method
+        var inlineHtml = @"<div style='color: #2C3E50;'>
+    <h2 style='color: #3498DB;'>Welcome to Inline TextBlock Rendering!</h2>
+
+    <p>This example demonstrates the <b>HtmlConverter.ApplyToTextBlock</b> method, which applies HTML
+    formatting directly to a TextBlock without creating wrapper controls.</p>
+
+    <h3 style='color: #E74C3C;'>Key Features:</h3>
+
+    <p>✓ Supports <b>bold</b>, <i>italic</i>, and <u>underlined</u> text<br/>
+    ✓ Handles <span style='color: red;'>colored text</span> and <span style='font-size: 18px;'>different font sizes</span><br/>
+    ✓ Renders <b><i>combined formatting</i></b> correctly<br/>
+    ✓ Processes headings inline: <h1>H1</h1> <h2>H2</h2> <h3>H3</h3><br/>
+    ✓ Extracts inline content from block elements</p>
+
+    <h4 style='color: #27AE60;'>Use Cases:</h4>
+
+    <p>This method is perfect for scenarios where you need rich text formatting within a single TextBlock,
+    such as <b style='color: #8E44AD;'>tooltips</b>, <i style='color: #F39C12;'>notifications</i>,
+    or <u style='color: #16A085;'>status messages</u>.</p>
+
+    <h5>Technical Details:</h5>
+
+    <p>Unlike <span style='font-family: Consolas;'>ToAvalonia()</span> which returns a Control that may
+    include wrapper elements like StackPanel or Border, <span style='font-family: Consolas;'>ApplyToTextBlock()</span>
+    processes only inline elements and applies them directly to the TextBlock's Inlines collection.</p>
+
+    <h6>Example Code:</h6>
+
+    <p><span style='background-color: #ECF0F1; font-family: Consolas; padding: 5px;'>
+    var textBlock = new TextBlock();<br/>
+    HtmlConverter.ApplyToTextBlock(textBlock, htmlString);
+    </span></p>
+
+    <p>Block-level elements like <b>&lt;div&gt;</b> and <b>&lt;table&gt;</b> are ignored, but their
+    inline content is still extracted and rendered. This allows you to use the same HTML source for
+    both full layout rendering and inline-only rendering!</p>
+</div>";
+        InlineHtml.Text = inlineHtml;
+        HtmlConverter.ApplyToTextBlock(InlineOutput, inlineHtml);
+
+        // Example 7: Interactive - Start with a simple example
         var interactiveHtml = @"<div>
     <h2>Try it yourself!</h2>
     <p>Edit the HTML on the left to see it rendered here.</p>
