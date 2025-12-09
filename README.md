@@ -33,14 +33,14 @@ using Avalonia.Controls;
 
 // Simple text with formatting
 var html = "<p>Hello <b>World</b>!</p>";
-Control control = HtmlToAvalonia.FromHtml(html);
+Control control = HtmlConverter.ToAvalonia(html);
 
 // With CSS styling
 var styledHtml = @"
     <div style='color: red; font-size: 16px;'>
         <p>This is <b>bold</b> and <i>italic</i> text.</p>
     </div>";
-Control styledControl = HtmlToAvalonia.FromHtml(styledHtml);
+Control styledControl = HtmlConverter.ToAvalonia(styledHtml);
 
 // With tables
 var tableHtml = @"
@@ -54,19 +54,19 @@ var tableHtml = @"
             <td>Cell 2</td>
         </tr>
     </table>";
-Control tableControl = HtmlToAvalonia.FromHtml(tableHtml);
+Control tableControl = HtmlConverter.ToAvalonia(tableHtml);
 
 // With alignment
 var centeredHtml = "<center><h1>Centered Title</h1></center>";
-Control centeredControl = HtmlToAvalonia.FromHtml(centeredHtml);
+Control centeredControl = HtmlConverter.ToAvalonia(centeredHtml);
 ```
 
 ### Advanced Usage with Optional Parameters
 
-The `FromHtml` method accepts optional parameters to customize the rendering context:
+The `ToAvalonia` method accepts optional parameters to customize the rendering context:
 
 ```csharp
-var control3 = HtmlToAvalonia.FromHtml(
+var control3 = HtmlConverter.ToAvalonia(
     html,
     // Specify custom viewport dimensions (useful for responsive layouts)
     viewportWidth: 1024,
@@ -109,7 +109,7 @@ var html = @"
         <h1>Title</h1>
         <p>This is a paragraph with <b>bold</b>, <i>italic</i>, and <u>underlined</u> text.</p>
     </div>";
-var control = HtmlToAvalonia.FromHtml(html);
+var control = HtmlConverter.ToAvalonia(html);
 ```
 
 ### CSS Styling
@@ -121,7 +121,7 @@ var html = @"
             Styled paragraph
         </p>
     </div>";
-var control = HtmlToAvalonia.FromHtml(html);
+var control = HtmlConverter.ToAvalonia(html);
 ```
 
 ### Tables
@@ -144,7 +144,7 @@ var html = @"
             <td>Row 3, Cell 2</td>
         </tr>
     </table>";
-var control = HtmlToAvalonia.FromHtml(html);
+var control = HtmlConverter.ToAvalonia(html);
 ```
 
 ### Text Alignment
@@ -156,7 +156,7 @@ var html = @"
         <p style='text-align: center;'>Center aligned</p>
         <p style='text-align: right;'>Right aligned</p>
     </div>";
-var control = HtmlToAvalonia.FromHtml(html);
+var control = HtmlConverter.ToAvalonia(html);
 ```
 
 ## License

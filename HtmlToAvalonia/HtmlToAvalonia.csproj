@@ -14,7 +14,7 @@
         <Product>HtmlToAvalonia</Product>
         <Description>A library that converts HTML strings with CSS formatting into Avalonia UI controls. Supports text formatting, colors, layouts, tables, and more using AngleSharp for standards-compliant HTML/CSS parsing.</Description>
         <PackageTags>avalonia;html;css;ui;controls;anglesharp</PackageTags>
-        <PackageProjectUrl>https://github.com/MaxwellDreytser/HtmlToAvalonia</PackageProjectUrl>
+        <PackageProjectUrl>https://github.com/Maxwell175/HtmlToAvalonia</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Maxwell175/HtmlToAvalonia</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>

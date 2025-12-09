@@ -15,7 +15,7 @@ namespace HtmlToAvalonia;
 /// <summary>
 /// Provides functionality to convert HTML with CSS formatting into Avalonia controls.
 /// </summary>
-public static class HtmlToAvalonia
+public static class HtmlConverter
 {
     /// <summary>
     /// Converts an HTML string with CSS formatting into an Avalonia Control.
@@ -25,7 +25,7 @@ public static class HtmlToAvalonia
     /// <param name="viewportHeight">Optional viewport height in pixels. If not specified, uses primary screen height or 1080.</param>
     /// <param name="fontSize">Optional base font size in pixels for em/rem calculations. Default is 16.</param>
     /// <returns>An Avalonia Control representing the HTML content.</returns>
-    public static Control FromHtml(
+    public static Control ToAvalonia(
         string html,
         double? viewportWidth = null,
         double? viewportHeight = null,

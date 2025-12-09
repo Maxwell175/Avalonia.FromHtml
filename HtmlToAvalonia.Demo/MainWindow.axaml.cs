@@ -34,7 +34,7 @@ public partial class MainWindow : Window
     <p>Line breaks work too:<br/>First line<br/>Second line<br/>Third line</p>
 </div>";
         BasicFormattingHtml.Text = basicHtml;
-        BasicFormattingOutput.Child = HtmlToAvalonia.FromHtml(basicHtml);
+        BasicFormattingOutput.Child = HtmlConverter.ToAvalonia(basicHtml);
 
         // Example 2: Colors and Styles
         var colorsHtml = @"<div>
@@ -78,7 +78,7 @@ public partial class MainWindow : Window
     </p>
 </div>";
         ColorsHtml.Text = colorsHtml;
-        ColorsOutput.Child = HtmlToAvalonia.FromHtml(colorsHtml);
+        ColorsOutput.Child = HtmlConverter.ToAvalonia(colorsHtml);
 
         // Example 3: Tables
         var tablesHtml = @"<div>
@@ -181,7 +181,7 @@ public partial class MainWindow : Window
     </table>
 </div>";
         TablesHtml.Text = tablesHtml;
-        TablesOutput.Child = HtmlToAvalonia.FromHtml(tablesHtml);
+        TablesOutput.Child = HtmlConverter.ToAvalonia(tablesHtml);
 
         // Example 4: Alignment
         var alignmentHtml = @"<div>
@@ -235,7 +235,7 @@ public partial class MainWindow : Window
     </table>
 </div>";
         AlignmentHtml.Text = alignmentHtml;
-        AlignmentOutput.Child = HtmlToAvalonia.FromHtml(alignmentHtml);
+        AlignmentOutput.Child = HtmlConverter.ToAvalonia(alignmentHtml);
 
         // Example 5: Complex Document
         var complexHtml = @"<div style='padding: 20px;'>
@@ -356,7 +356,7 @@ public partial class MainWindow : Window
     </div>
 </div>";
         ComplexHtml.Text = complexHtml;
-        ComplexOutput.Child = HtmlToAvalonia.FromHtml(complexHtml);
+        ComplexOutput.Child = HtmlConverter.ToAvalonia(complexHtml);
 
         // Example 6: Interactive - Start with a simple example
         var interactiveHtml = @"<div>
@@ -365,7 +365,7 @@ public partial class MainWindow : Window
     <p>You can use <b>bold</b>, <i>italic</i>, <u>underline</u>, and more!</p>
 </div>";
         InteractiveHtml.Text = interactiveHtml;
-        InteractiveOutput.Child = HtmlToAvalonia.FromHtml(interactiveHtml);
+        InteractiveOutput.Child = HtmlConverter.ToAvalonia(interactiveHtml);
     }
 
     private void OnInteractiveHtmlChanged(object? sender, TextChangedEventArgs e)
@@ -382,7 +382,7 @@ public partial class MainWindow : Window
                 return;
             }
 
-            var rendered = HtmlToAvalonia.FromHtml(html);
+            var rendered = HtmlConverter.ToAvalonia(html);
             InteractiveOutput.Child = rendered;
         }
         catch (System.Exception ex)
