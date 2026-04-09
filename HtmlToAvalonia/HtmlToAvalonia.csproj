@@ -8,7 +8,7 @@
         <!-- NuGet Package Properties -->
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>HtmlToAvalonia</PackageId>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Authors>Maxwell Dreytser</Authors>
         <Company>Maxwell Dreytser</Company>
         <Product>HtmlToAvalonia</Product>
@@ -20,7 +20,7 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-        <Copyright>Copyright (c) 2025 Maxwell Dreytser</Copyright>
+        <Copyright>Copyright (c) 2026 Maxwell Dreytser</Copyright>
     </PropertyGroup>
 
     <ItemGroup>
