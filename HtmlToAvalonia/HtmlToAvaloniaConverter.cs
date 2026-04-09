@@ -314,8 +314,8 @@ internal class HtmlToAvaloniaConverter
         context.FontWeight = AvaloniaFontWeight.Bold;
 
         var span = CreateFormattedSpan(context);
+        ApplyInlineStyles(span, element, context, preserveFontWeight: true);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element, preserveFontWeight: true);
         return span;
     }
 
@@ -326,8 +326,8 @@ internal class HtmlToAvaloniaConverter
         context.FontStyle = AvaloniaFontStyle.Italic;
 
         var span = CreateFormattedSpan(context);
+        ApplyInlineStyles(span, element, context, preserveFontStyle: true);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element, preserveFontStyle: true);
         return span;
     }
 
@@ -338,8 +338,8 @@ internal class HtmlToAvaloniaConverter
         context.TextDecorations = TextDecorations.Underline;
 
         var span = CreateFormattedSpan(context);
+        ApplyInlineStyles(span, element, context, preserveTextDecoration: true);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element, preserveTextDecoration: true);
         return span;
     }
 
@@ -349,8 +349,8 @@ internal class HtmlToAvaloniaConverter
         var context = parentContext.Clone();
 
         var span = CreateFormattedSpan(context);
+        ApplyInlineStyles(span, element, context);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element);
         return span;
     }
 
@@ -361,8 +361,8 @@ internal class HtmlToAvaloniaConverter
         context.FontWeight = AvaloniaFontWeight.Bold;
 
         var span = CreateFormattedSpan(context, GetHeadingFontSize(tagName));
+        ApplyInlineStyles(span, element, context, preserveFontWeight: true);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element, preserveFontWeight: true);
         return span;
     }
 
@@ -372,8 +372,8 @@ internal class HtmlToAvaloniaConverter
         var context = parentContext.Clone();
 
         var span = CreateFormattedSpan(context);
+        ApplyInlineStyles(span, element, context);
         AddInlineContent(span, element, context);
-        ApplyInlineStyles(span, element);
         return span;
     }
 
@@ -409,7 +409,7 @@ internal class HtmlToAvaloniaConverter
         }
     }
 
-    private void ApplyInlineStyles(Span span, IElement element, bool preserveFontWeight = false, bool preserveFontStyle = false, bool preserveTextDecoration = false)
+    private void ApplyInlineStyles(Span span, IElement element, InlineFormattingContext? context = null, bool preserveFontWeight = false, bool preserveFontStyle = false, bool preserveTextDecoration = false)
     {
         // Use GetComputedStyle to get all computed CSS properties
         if (element is IHtmlElement htmlElement)
@@ -456,6 +456,7 @@ internal class HtmlToAvaloniaConverter
                         if (!string.IsNullOrEmpty(fontWeight))
                         {
                             span.FontWeight = ParseFontWeight(fontWeight);
+                            if (context != null) context.FontWeight = span.FontWeight;
                         }
                     }
 
@@ -466,6 +467,7 @@ internal class HtmlToAvaloniaConverter
                         if (!string.IsNullOrEmpty(fontStyle))
                         {
                             span.FontStyle = ParseFontStyle(fontStyle);
+                            if (context != null) context.FontStyle = span.FontStyle;
                         }
                     }
 
@@ -476,6 +478,7 @@ internal class HtmlToAvaloniaConverter
                         if (!string.IsNullOrEmpty(textDecoration) && textDecoration.ToLowerInvariant().Contains("underline"))
                         {
                             span.TextDecorations = TextDecorations.Underline;
+                            if (context != null) context.TextDecorations = span.TextDecorations;
                         }
                     }
                 }
