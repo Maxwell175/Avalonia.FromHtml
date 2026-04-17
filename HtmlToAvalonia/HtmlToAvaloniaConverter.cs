@@ -371,10 +371,18 @@ internal class HtmlToAvaloniaConverter
         // Clone parent context (no additional formatting for paragraphs)
         var context = parentContext.Clone();
 
-        var span = CreateFormattedSpan(context);
-        ApplyInlineStyles(span, element, context);
-        AddInlineContent(span, element, context);
-        return span;
+        // Wrap the paragraph content in a Span, preceded by a blank line to mimic block spacing.
+        // A <p> is equivalent to two line breaks before its content.
+        var wrapper = new Span();
+        wrapper.Inlines.Add(new LineBreak());
+        wrapper.Inlines.Add(new LineBreak());
+
+        var inner = CreateFormattedSpan(context);
+        ApplyInlineStyles(inner, element, context);
+        AddInlineContent(inner, element, context);
+
+        wrapper.Inlines.Add(inner);
+        return wrapper;
     }
 
     private void AddInlineContent(Span parentSpan, IElement element, InlineFormattingContext context)
@@ -925,17 +933,27 @@ internal class HtmlToAvaloniaConverter
         }
 
         // Apply padding
-        var padding = computedStyle.GetPropertyValue("padding");
-        if (!string.IsNullOrEmpty(padding))
+        var paddingTop    = ParseLength(computedStyle.GetPropertyValue("padding-top"));
+        var paddingRight  = ParseLength(computedStyle.GetPropertyValue("padding-right"));
+        var paddingBottom = ParseLength(computedStyle.GetPropertyValue("padding-bottom"));
+        var paddingLeft   = ParseLength(computedStyle.GetPropertyValue("padding-left"));
+        if (paddingTop != 0 || paddingRight != 0 || paddingBottom != 0 || paddingLeft != 0)
         {
-            ApplyCssProperty(control, "padding", padding);
+            var thickness = new Thickness(paddingLeft, paddingTop, paddingRight, paddingBottom);
+            if (control is Border borderPad)
+                borderPad.Padding = thickness;
+            else if (control is Decorator decoratorPad)
+                decoratorPad.Padding = thickness;
         }
 
         // Apply margin
-        var margin = computedStyle.GetPropertyValue("margin");
-        if (!string.IsNullOrEmpty(margin))
+        var marginTop    = ParseLength(computedStyle.GetPropertyValue("margin-top"));
+        var marginRight  = ParseLength(computedStyle.GetPropertyValue("margin-right"));
+        var marginBottom = ParseLength(computedStyle.GetPropertyValue("margin-bottom"));
+        var marginLeft   = ParseLength(computedStyle.GetPropertyValue("margin-left"));
+        if (marginTop != 0 || marginRight != 0 || marginBottom != 0 || marginLeft != 0)
         {
-            ApplyCssProperty(control, "margin", margin);
+            control.Margin = new Thickness(marginLeft, marginTop, marginRight, marginBottom);
         }
 
         // Apply width - check inline style for percentage values using AngleSharp's GetStyle() API
@@ -1024,18 +1042,12 @@ internal class HtmlToAvaloniaConverter
 
             case "font-weight":
                 if (control is TextBlock tb2)
-                {
-                    tb2.FontWeight = value.ToLowerInvariant() == "bold" || value == "700" || value == "800" || value == "900"
-                        ? AvaloniaFontWeight.Bold
-                        : AvaloniaFontWeight.Normal;
-                }
+                    tb2.FontWeight = ParseFontWeight(value);
                 break;
 
             case "font-style":
                 if (control is TextBlock tb3)
-                {
-                    tb3.FontStyle = value.ToLowerInvariant() == "italic" ? AvaloniaFontStyle.Italic : AvaloniaFontStyle.Normal;
-                }
+                    tb3.FontStyle = ParseFontStyle(value);
                 break;
 
             case "text-align":
@@ -1047,21 +1059,6 @@ internal class HtmlToAvaloniaConverter
                 {
                     tb4.TextDecorations = TextDecorations.Underline;
                 }
-                break;
-
-            case "padding":
-                if (control is Border border2)
-                {
-                    border2.Padding = ParseThickness(value);
-                }
-                else if (control is Decorator decorator)
-                {
-                    decorator.Padding = ParseThickness(value);
-                }
-                break;
-
-            case "margin":
-                control.Margin = ParseThickness(value);
                 break;
 
             case "width":
